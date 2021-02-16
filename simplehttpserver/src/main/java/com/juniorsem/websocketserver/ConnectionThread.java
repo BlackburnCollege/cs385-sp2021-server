@@ -43,17 +43,14 @@ public class ConnectionThread extends Thread {
             Scanner s = new Scanner(in, "UTF-8");
             while (true) {
 
-                while (in.available() == 0) {
-                    System.out.println("stuck");
+                for (int i = 0; in.available() == 0; i++) {
+                    System.out.println("stuck" + i);
                 }
-
-                while (in.available() < 10) {
+                while (in.available() < 3) {
                     System.out.println("stuck2ElectricBoogaloo");
                 }
-
                 String data = s.useDelimiter("\\r\\n\\r\\n").next();
                 Matcher get = Pattern.compile("^GET").matcher(data);
-
                 if (get.find()) {
                     Matcher match = Pattern.compile("Sec-WebSocket-Key: (.*)").matcher(data);
                     match.find();
@@ -64,7 +61,7 @@ public class ConnectionThread extends Thread {
                             + Base64.getEncoder().encodeToString(MessageDigest.getInstance("SHA-1").digest((match.group(1) + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11").getBytes("UTF-8")))
                             + "\r\n\r\n").getBytes("UTF-8");
                     out.write(response, 0, response.length);
-
+                    out.flush();
                     byte[] decoded = new byte[6];
                     byte[] encoded = new byte[]{(byte) 198, (byte) 131, (byte) 130, (byte) 182, (byte) 194, (byte) 135};
                     byte[] key = new byte[]{(byte) 167, (byte) 225, (byte) 225, (byte) 210};
@@ -78,7 +75,13 @@ public class ConnectionThread extends Thread {
 
                     System.out.println(message);
 
+                }else{
+                    System.out.println(data);
                 }
+                System.out.println("asdf " + data);
+                out.write("WAITING".getBytes(StandardCharsets.UTF_8));
+                out.flush();
+
             }
 
         } catch (NoSuchAlgorithmException e) {
