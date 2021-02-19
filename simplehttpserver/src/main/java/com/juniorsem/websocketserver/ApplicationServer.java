@@ -12,6 +12,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 public class ApplicationServer {
 
 
@@ -19,7 +20,9 @@ public class ApplicationServer {
 
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
         ApplicationServer runner = new ApplicationServer();
-        runner.mainTwo(null);
+        //runner.mainTwo(null);
+        ConnectionEndPoint con = new ConnectionEndPoint();
+        
     }
 
     public void mainTwo(String[] args) throws IOException, NoSuchAlgorithmException {
@@ -32,7 +35,6 @@ public class ApplicationServer {
                 threadArray[i] = new ConnectionThread(client);
                 threadArray[i].run();
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
