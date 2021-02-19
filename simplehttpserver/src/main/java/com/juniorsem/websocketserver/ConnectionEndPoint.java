@@ -16,9 +16,14 @@ import javax.websocket.server.ServerEndpoint;
 
 @ServerEndpoint(value = "/actions")
 public class ConnectionEndPoint {
+
+
+
+
     @OnOpen
     public void onOpen(Session session) throws IOException {
         // Get session and WebSocket connection
+        System.out.println("on open");
 
     }
 
@@ -26,15 +31,18 @@ public class ConnectionEndPoint {
     @OnMessage
     public void onMessage(Session session, String message) throws IOException {
         // Handle new messages
+        System.out.println("the message" + message);
     }
 
     @OnClose
     public void onClose(Session session) throws IOException {
         // WebSocket connection closes
+        System.out.println("on close");
     }
 
     @OnError
     public void onError(Session session, Throwable throwable) {
         // Do error handling here
+        System.out.println("on error");
     }
 }
