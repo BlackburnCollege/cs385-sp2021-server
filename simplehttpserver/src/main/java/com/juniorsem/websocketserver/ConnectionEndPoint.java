@@ -14,7 +14,7 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
-@ServerEndpoint(value = "/chat/{username}")
+@ServerEndpoint(value = "/actions")
 public class ConnectionEndPoint {
     @OnOpen
     public void onOpen(Session session) throws IOException {
