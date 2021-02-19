@@ -3,10 +3,10 @@ package com.juniorsem.httpserver.core;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class HttpConnectionWorkerThread extends Thread{
 
@@ -24,12 +24,11 @@ public class HttpConnectionWorkerThread extends Thread{
         OutputStream outputStream = null;
 
         try {
+
             inputStream = socket.getInputStream();
             outputStream = socket.getOutputStream();
 
-
-            String html = "<html><head>Simple Java HTTP Server<title></title></head><body><h1>This page was made " +
-                    "using my Simple Java HTTP Server</h1></body></html>";
+            String html = new String(Files.readAllBytes(Paths.get("src/main/resources/thisexists/index.html")));
 
             final String CRLF = "\n\r"; // 13, 10 ACII
 
