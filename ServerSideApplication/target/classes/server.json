@@ -1,0 +1,25 @@
+{
+  "controller": {
+    "joystick": {
+      "x": "0",
+      "y": "0"
+    },
+    "button": {
+      "a": "false",
+      "b": "false",
+      "x": "false",
+      "y": "false",
+      "start": "false"
+    }
+  },
+
+  "user": {
+    "name": "title",
+    "ip": "10.0.0.1",
+    "controller": "object"
+  },
+
+  "port": 8080,
+  "webroot": "/tmp"
+
+}
