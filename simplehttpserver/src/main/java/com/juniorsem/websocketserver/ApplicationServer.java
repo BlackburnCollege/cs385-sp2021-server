@@ -1,5 +1,7 @@
 package com.juniorsem.websocketserver;
 
+import javax.websocket.Session;
+import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -12,14 +14,22 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 public class ApplicationServer {
 
 
     ConnectionThread[] threadArray = new ConnectionThread[8];
-
+    public Session s;
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
         ApplicationServer runner = new ApplicationServer();
-        runner.mainTwo(null);
+        //runner.mainTwo(null);
+
+        
+    }
+
+    public void saveSession(Session test){
+        System.out.println("");
+        s = test;
     }
 
     public void mainTwo(String[] args) throws IOException, NoSuchAlgorithmException {
@@ -32,7 +42,6 @@ public class ApplicationServer {
                 threadArray[i] = new ConnectionThread(client);
                 threadArray[i].run();
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
