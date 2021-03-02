@@ -5,12 +5,7 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import javax.websocket.EncodeException;
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
+import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
@@ -21,7 +16,7 @@ public class ConnectionEndPoint {
 
 
     @OnOpen
-    public void onOpen(Session session) throws IOException {
+    public void onOpen(Session session, EndpointConfig endpointConfig) {
         // Get session and WebSocket connection
         System.out.println("on open");
 
@@ -39,6 +34,7 @@ public class ConnectionEndPoint {
         // WebSocket connection closes
         System.out.println("on close");
     }
+
 
     @OnError
     public void onError(Session session, Throwable throwable) {

@@ -22,7 +22,7 @@ public class ApplicationServer {
     public Session s;
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
         ApplicationServer runner = new ApplicationServer();
-        //runner.mainTwo(null);
+        runner.mainTwo(null);
 
         
     }
