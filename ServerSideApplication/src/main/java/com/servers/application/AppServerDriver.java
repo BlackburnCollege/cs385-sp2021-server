@@ -1,7 +1,9 @@
 package com.servers.application;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.servers.application.json_objects.User;
 import com.servers.application.json_objects.UserController;
 import com.servers.webserver.WebServerDriver;
 import org.slf4j.Logger;
@@ -20,41 +22,43 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class AppServerDriver {
+public class AppServerDriver extends Thread {
+
 
 
     private final static Logger LOGGER = LoggerFactory.getLogger(WebServerDriver.class);
     private static ObjectMapper myObjectMapper = new ObjectMapper();
 
-    public static void main(String[] args) {
+    private Socket socket;
+    private OutputStream outputStream;
 
-        int portNumber = 8000;
+    private WebsocketMsgReceiver receiver;
 
-        ServerSocket server;
+    public AppServerDriver(Socket s){
+        socket = s;
+    }
+
+    public void sendMessage(String message){
         try {
-            server = new ServerSocket(portNumber);
-        } catch (IOException exception) {
-            throw new IllegalStateException("Could not create web server", exception);
+            System.out.println("sent: " + message);
+            outputStream.write(encode(message));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
 
-
-        Socket clientSocket;
-        try {
-            clientSocket = server.accept(); //waits until a client connects
-        } catch (IOException waitException) {
-            throw new IllegalStateException("Could not wait for client connection", waitException);
-        }
-
+    @Override
+    public void run() {
         InputStream inputStream;
         try {
-            inputStream  = clientSocket.getInputStream();
+            inputStream  = socket.getInputStream();
         } catch (IOException inputStreamException) {
             throw new IllegalStateException("Could not connect to client input stream", inputStreamException);
         }
 
-        OutputStream outputStream;
+
         try {
-            outputStream  = clientSocket.getOutputStream();
+            outputStream  = socket.getOutputStream();
         } catch (IOException inputStreamException) {
             throw new IllegalStateException("Could not connect to client input stream", inputStreamException);
         }
@@ -86,21 +90,9 @@ public class AppServerDriver {
                 "\"false\", \"y\": \"false\", \"start\": \"false\" }";
 
         UserController controller = null;
-        
-        try {
-           controller = myObjectMapper.readValue(temp, UserController.class);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println(controller.getJoystick().getX());
-
-        LOGGER.info("Server starting....");
-
-
     }
 
-    private static void printInputStream(InputStream inputStream) throws IOException {
+    private void printInputStream(InputStream inputStream) throws IOException {
         byte[] b = new byte[8000];//incoming buffer
         byte[] message =null;//buffer to assemble message in
         byte[] masks = new byte[4];
@@ -160,7 +152,28 @@ public class AppServerDriver {
                         isSplit=true;
                     }else {
                         isSplit=false;
-                        System.out.println(new String(message));
+                        //gets message here
+
+                        String msg = new String(message);
+                        System.out.println(msg);
+                        JsonNode root = myObjectMapper.readTree(msg);
+                        System.out.println(root.at("/header").toString());
+                        if (root.at("/header").toString().equals("\"user\"")) {
+                            //todo change this
+                            if(receiver == null) {
+                                receiver = new WebsocketController();
+                            }
+                            WebsocketManger.SendToGameClient.push(receiver.interpretMessage(msg));
+
+                        } else if (root.at("/header").toString().equals("\"client\"")) {
+                            //todo change this
+                            if(receiver == null) {
+                                receiver = new WebSocketGameClient();
+                            }
+                        }
+
+
+
                         b = new byte[8000];
                     }
 

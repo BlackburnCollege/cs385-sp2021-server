@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="9b2c3b3b-8bdb-4604-a8ec-08485f329797" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/http/HttpMessage.class" beforeDir="false" afterPath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/http/HttpMessage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/http/HttpMethod.class" beforeDir="false" afterPath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/http/HttpMethod.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/http/HttpParser.class" beforeDir="false" afterPath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/http/HttpParser.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/http/HttpParsingException.class" beforeDir="false" afterPath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/http/HttpParsingException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/http/HttpRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/http/HttpRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/http/HttpStatusCode.class" beforeDir="false" afterPath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/http/HttpStatusCode.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/httpserver/HttpServer.class" beforeDir="false" afterPath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/httpserver/HttpServer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/httpserver/config/Configuration.class" beforeDir="false" afterPath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/httpserver/config/Configuration.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/httpserver/config/ConfigurationManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/httpserver/config/ConfigurationManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/httpserver/config/HttpConfigurationException.class" beforeDir="false" afterPath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/httpserver/config/HttpConfigurationException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/httpserver/core/HttpConnectionWorkerThread.class" beforeDir="false" afterPath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/httpserver/core/HttpConnectionWorkerThread.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/httpserver/core/ServerListenerThread.class" beforeDir="false" afterPath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/httpserver/core/ServerListenerThread.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/httpserver/util/Json.class" beforeDir="false" afterPath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/httpserver/util/Json.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/websocketserver/ApplicationServer.class" beforeDir="false" afterPath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/websocketserver/ApplicationServer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/websocketserver/ConnectionEndPoint.class" beforeDir="false" afterPath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/websocketserver/ConnectionEndPoint.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/websocketserver/ConnectionThread.class" beforeDir="false" afterPath="$PROJECT_DIR$/../simplehttpserver/target/classes/com/juniorsem/websocketserver/ConnectionThread.class" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1pBLYlI0Pl9W9oAAzn9Abnx0SDY" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="9b2c3b3b-8bdb-4604-a8ec-08485f329797" name="Default Changelist" comment="" />
+      <created>1614651586312</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1614651586312</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

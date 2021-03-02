@@ -4,6 +4,7 @@ package com.servers.application.json_objects;
  *
  */
 public class User {
+    private String header;
     private String name;
     private String ip;
     private UserController controller;

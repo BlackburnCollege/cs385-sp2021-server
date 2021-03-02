@@ -4,6 +4,8 @@ package com.servers.application.json_objects;
  *
  */
 public class UserController {
+
+
     Joystick JoystickObject;
     private String a;
     private String b;
@@ -63,4 +65,5 @@ public class UserController {
     public void setStart(String start) {
         this.start = start;
     }
+
 }

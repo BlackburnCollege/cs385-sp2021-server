@@ -1,5 +1,661 @@
-<html><head>Simple Java HTTP Server<title></title></head><body><h1>This page was made using my Simple Java HTTP Server</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <style>
+      .body {
+        background-color: grey;
+        text-align: left;
+        vertical-align: middle;
+        overflow: hidden;
+        width: 100%;
+      }
+      .gamebutton {
+        text-align: left;
+        width: 100%;
+        padding: 20% 0% 20% 85%;
+        text-align: center;
+        background-color: paleturquoise;
+        color: palevioletred;
+        display: inline-flex;
+        font-size: 30px;
+        cursor: pointer;
+      }
+      .gamebuttontest {
+        width: 50%;
+        height: 20%;
+        padding: 20% 0% 0% 20%;
+        text-align: center;
+        background-color: paleturquoise;
+        display: inline-flex;
+        font-size: 30px;
+        cursor: pointer;
+      }
+      .gamebuttonjoy {
+        touch-action: none;
+        width: 65%;
+        text-align: center;
+        align-content: center;
 
-<a href ="coolpage1.html">Click here for free candy!</a>
+        display: inline-flex;
+        border: 1px solid black;
+      }
+      .setup{
+        text-align: center;
+      }
+      #output {
+        overflow: auto;
+      }
+      #output > p {
+        overflow-wrap: break-word;
+      }
+      #output span {
+        color: blue;
+      }
+      #output span.error {
+        color: red;
+      }
+      #joystick{
+        border: 1px solid black;
+        background-color: paleturquoise;
 
-</body></html>
+        touch-action: none;
+        text-align: left;
+        border: 1px solid black;
+      }
+    </style>
+
+
+
+</head>
+<!--input value needs changed to server eventually-->
+<body class="body" onresize="OnResize()">
+<h4 style="size: 10%; color: white; text-align: center;">Flow Controller</h4>
+<div id="setup" class="setup">
+    IP: <br/>
+    <input
+            id="wsip"
+            type="text"
+            value="10.151.2.138"
+            style="background-color: lightpink; color: blue; border: none;"
+    />
+
+    <br/> Username: <br/>
+    <input
+            id="username"
+            type="text"
+            value="Anonymous"
+            style="background-color: lightpink; color: blue; border: none;"
+    />
+    <br/>
+    <button id="setupB" style="background-color: cadetblue; border: none;">
+        Connect
+    </button>
+</div>
+
+<div id="quizButtons" hidden > <!-- debug -->
+    <button id="Xbutton" class="gamebuttontest" style="background-color:paleturquoise; ">
+        <button id="Ybutton" class="gamebuttontest" style="background-color:rgb(229, 229, 155);" > </button>
+    </button>
+    <button id="Abutton" class="gamebuttontest" style="background-color:rgb(121, 230, 121); ">
+        <button id="Bbutton" class="gamebuttontest" style="background-color:palevioletred;" > </button>
+    </button>
+</div>
+
+<div id="gameButtons" hidden> <!-- debug -->
+    <div id="left" class="gamebuttonjoy"> <button id="right" class="gamebutton" style="background-color:palevioletred; color: paleturquoise;" > </button></div>
+</div>
+<div id="output"></div>
+
+
+<script>
+      //code modified from https://github.com/bobboteck/JoyStick MIT
+      var JoyStick = (function(container, parameters) {
+      parameters = parameters || {};
+      var title = (undefined === parameters.title ? 'joystick' : parameters.title),
+        width = (undefined === parameters.width ? 0 : parameters.width),
+        height = (undefined === parameters.height ? 0 : parameters.height),
+        internalFillColor = (undefined === parameters.internalFillColor ? '#00AA00' : parameters.internalFillColor),
+        internalLineWidth = (undefined === parameters.internalLineWidth ? 2 : parameters.internalLineWidth),
+        internalStrokeColor = (undefined === parameters.internalStrokeColor ? '#003300' : parameters.internalStrokeColor),
+        externalLineWidth = (undefined === parameters.externalLineWidth ? 2 : parameters.externalLineWidth),
+        externalStrokeColor = (undefined === parameters.externalStrokeColor ? '#008000' : parameters.externalStrokeColor),
+        autoReturnToCenter = (undefined === parameters.autoReturnToCenter ? true : parameters.autoReturnToCenter);
+
+      // Create Canvas element and add it in the Container object
+      var objContainer = document.getElementById(container);
+      var canvas = document.createElement('canvas');
+      canvas.id = title;
+      console.log(objContainer.offsetWidth)
+      if(width == 0) width = 250;
+      if(height == 0) height = 250;
+      canvas.width = width;
+      //this was 50%
+      //canvas.style.width = "50%";
+      canvas.height = height;
+      //canvas.style.height = "20%";
+      objContainer.prepend(canvas);
+      var context=canvas.getContext('2d');
+
+      var pressed = 0; // Bool - 1=Yes - 0=No
+      var circumference = 2 * Math.PI;
+      //if you want to change the width or height change the 25
+      var internalRadius = (canvas.width - (width - 200)/2 -((50*2)+10)) /2;
+      var maxMoveStick = internalRadius + 5;
+      var externalRadius = internalRadius + 30;
+      var centerX = canvas.width / 2;
+      var centerY = canvas.height / 2;
+      var directionHorizontalLimitPos = canvas.width / 10;
+      var directionHorizontalLimitNeg = directionHorizontalLimitPos * -1;
+      var directionVerticalLimitPos = canvas.height / 10;
+      var directionVerticalLimitNeg = directionVerticalLimitPos * -1;
+      // Used to save current position of stick
+      var movedX=centerX;
+      var movedY=centerY;
+
+      canvas.width = canvas.width;
+      canvas.height = canvas.height;
+      // Check if the device support the touch or not
+
+
+        canvas.addEventListener('touchstart', onTouchStart, false);
+        canvas.addEventListener('touchmove', onTouchMove, false);
+        canvas.addEventListener('touchend', onTouchEnd, false);
+
+        canvas.addEventListener('mousedown', onMouseDown, false);
+        canvas.addEventListener('mousemove', onMouseMove, false);
+        canvas.addEventListener('mouseup', onMouseUp, false);
+
+      // Draw the object
+      drawExternal();
+      drawInternal(centerX, centerY);
+      /******************************************************
+       * Private methods
+       *****************************************************/
+      /**
+       * @desc Draw the external circle used as reference position
+       */
+      function drawExternal()
+      {
+        context.beginPath();
+        context.arc(centerX, centerY, externalRadius, 0, circumference, false);
+        context.lineWidth = externalLineWidth;
+        context.strokeStyle = externalStrokeColor;
+        context.stroke();
+      }
+      /**
+       * @desc Draw the internal stick in the current position the user have moved it
+       */
+      function drawInternal()
+      {
+        context.beginPath();
+        if(movedX<internalRadius) movedX=maxMoveStick;
+        if((movedX+internalRadius)>canvas.width) movedX=canvas.width-(maxMoveStick);
+        if(movedY<internalRadius) movedY=maxMoveStick;
+        if((movedY+internalRadius)>canvas.height) movedY=canvas.height-(maxMoveStick);
+        context.arc(movedX, movedY, internalRadius, 0, circumference, false);
+        // create radial gradient
+        var grd = context.createRadialGradient(centerX, centerY, 5, centerX, centerY, 200);
+        // Light color
+        grd.addColorStop(0, internalFillColor);
+        // Dark color
+        grd.addColorStop(1, internalStrokeColor);
+        context.fillStyle = grd;
+        context.fill();
+        context.lineWidth = internalLineWidth;
+        context.strokeStyle = internalStrokeColor;
+        context.stroke();
+      }
+
+      /**
+       * @desc Events for manage touch
+       */
+      function onTouchStart(event)
+      {
+        pressed=1;
+      }
+      function onTouchMove(event)
+      {
+        // Prevent the browser from doing its default thing (scroll, zoom)
+        event.preventDefault();
+        if(pressed==1)
+        {
+          movedX=event.touches[0].pageX;
+          movedY=event.touches[0].pageY;
+          // Manage offset
+          movedX-=canvas.offsetLeft;
+          movedY-=canvas.offsetTop;
+          // Delete canvas
+          context.clearRect(0, 0, canvas.width, canvas.height);
+          // Redraw object
+          drawExternal();
+          drawInternal();
+        }
+      }
+      function onTouchEnd(event)
+      {
+        pressed=0;
+        // If required reset position store variable
+        // was if auto return to center. I want this true
+        if(true)
+        {
+          movedX=centerX;
+          movedY=centerY;
+        }
+        // Delete canvas
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        // Redraw object
+        drawExternal();
+        drawInternal();
+        //canvas.unbind('touchmove');
+      }
+      /**
+       * @desc Events for manage mouse
+       */
+      function onMouseDown(event)
+      {
+        pressed=1;
+      }
+      function onMouseMove(event)
+      {
+        if(pressed==1)
+        {
+          movedX=event.pageX;
+          movedY=event.pageY;
+          // Manage offset
+          movedX-=canvas.offsetLeft;
+          movedY-=canvas.offsetTop;
+          // Delete canvas
+          context.clearRect(0, 0, canvas.width, canvas.height);
+          // Redraw object
+          drawExternal();
+          drawInternal();
+        }
+      }
+      function onMouseUp(event)
+      {
+        pressed=0;
+        // If required reset position store variable
+        // was if auto return to center. I want this true
+        if(true)
+        {
+          movedX=centerX;
+          movedY=centerY;
+        }
+        // Delete canvas
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        // Redraw object
+        drawExternal();
+        drawInternal();
+        //canvas.unbind('mousemove');
+      }
+      /******************************************************
+       * Public methods
+       *****************************************************/
+      /**
+       * @desc The width of canvas
+       * @return Number of pixel width
+       */
+      this.GetWidth = function ()
+      {
+        return canvas.width;
+      };
+
+      /**
+       * @desc The height of canvas
+       * @return Number of pixel height
+       */
+       this.GetPressed= function ()
+      {
+        return pressed;
+      };
+
+      /**
+       * @desc The height of canvas
+       * @return Number of pixel height
+       */
+      this.GetHeight = function ()
+      {
+        return canvas.height;
+      };
+
+      /**
+       * @desc The X position of the cursor relative to the canvas that contains it and to its dimensions
+       * @return Number that indicate relative position
+       */
+      this.GetPosX = function ()
+      {
+        return movedX;
+      };
+
+      /**
+       * @desc The Y position of the cursor relative to the canvas that contains it and to its dimensions
+       * @return Number that indicate relative position
+       */
+      this.GetPosY = function ()
+      {
+        return movedY;
+      };
+
+      /**
+       * @desc Normalizzed value of X move of stick
+       * @return Integer from -100 to +100
+       */
+      this.GetX = function ()
+      {
+        return (((movedX - centerX)/maxMoveStick)).toFixed(2);
+      };
+
+      /**
+       * @desc Normalizzed value of Y move of stick
+       * @return Integer from -100 to +100
+       */
+      this.GetY = function ()
+      {
+        return ((((movedY - centerY)/maxMoveStick))*-1).toFixed(2);
+      };
+
+      /**
+       * @desc Get the direction of the cursor as a string that indicates the cardinal points where this is oriented
+       * @return String of cardinal point N, NE, E, SE, S, SW, W, NW and C when it is placed in the center
+       */
+      this.GetDir = function()
+      {
+        var result = "";
+        var orizontal = movedX - centerX;
+        var vertical = movedY - centerY;
+
+        if(vertical>=directionVerticalLimitNeg && vertical<=directionVerticalLimitPos)
+        {
+          result = "C";
+        }
+        if(vertical<directionVerticalLimitNeg)
+        {
+          result = "N";
+        }
+        if(vertical>directionVerticalLimitPos)
+        {
+          result = "S";
+        }
+
+        if(orizontal<directionHorizontalLimitNeg)
+        {
+          if(result=="C")
+          {
+            result = "W";
+          }
+          else
+          {
+            result += "W";
+          }
+        }
+        if(orizontal>directionHorizontalLimitPos)
+        {
+          if(result=="C")
+          {
+            result = "E";
+          }
+          else
+          {
+            result += "E";
+          }
+        }
+
+        return result;
+      };
+    });
+      </script>
+
+
+<script>
+      // http://www.websocket.org/echo.html
+
+     var betterController = {
+        joystick: {
+          x: 0,
+          y: 0
+        },
+        a: false,
+        b: false,
+        x: false,
+        y: false,
+        start: false
+      }
+      var user = {
+        header: "",
+        name: "",
+        ip: "",
+        controller: {
+          joystick: {
+            x: 0,
+            y: 0
+          },
+          a: false,
+          b: false,
+          x: false,
+          y: false,
+          start: false
+        }
+      }
+
+      let output = document.getElementById("output"),
+        left = document.getElementById("left"),
+        right = document.getElementById("right"),
+        setupbtn = document.getElementById("setupB");
+        xButton = document.getElementById("Xbutton");
+        yButton = document.getElementById("Ybutton");
+        aButton = document.getElementById("Abutton");
+        bButton = document.getElementById("Bbutton");
+
+      let wsip = document.getElementById("wsip");
+      let gameButtons = document.getElementById("gameButtons");
+      let setupButtons = document.getElementById("setup");
+      let quizButtons = document.getElementById("quizButtons");
+      // wsUri = "ws://echo.websocket.org/",
+
+      wsip.value = window.location.hostname;
+      let leftJoy = null;
+      setInterval(onLeftJoystick,50);
+      //left.addEventListener("touchmove",onLeft);
+      //left.addEventListener("mousemove",onLeft);
+      // right.addEventListener("touchstart", onRight);
+      //riht.addEventListener("click",onRight);
+      setupbtn.addEventListener("click", setupConnection);
+      xButton.addEventListener("touchstart", onXButton);
+      yButton.addEventListener("touchstart", onYButton);
+      aButton.addEventListener("touchstart", onAButton);
+      bButton.addEventListener("touchstart", onBButton);
+
+      // //for message creation
+      // let joyvalues = "0,0";
+      // let betterController.x = "false";
+      // let betterController.y = "false";
+      // let betterController.a = "false";
+      // let betterController.b = "false";
+
+      //add parameters to the joystick to make it resize
+      let browersWidth = left.clientWidth / 1.5;
+      let joyParm = '{"width" : '+ browersWidth +', "height": '+ browersWidth+ '}';
+
+      //debug
+      //leftJoy = new JoyStick('left',JSON.parse(joyParm));
+
+      let ISCONNECTED = false;
+
+      let username = "null";
+      function setupConnection() {
+        username = document.getElementById("username").value;
+        let ip = setupbtn.value;
+        if(username == null){
+          return;
+        }
+        user.name = username;
+        user.ip = "0.0.0.0";
+        user.header = "user";
+        console.log(ip);
+        wsUri = "ws://" + wsip.value + ":8000" + "/";
+        websocket = new WebSocket(wsUri);
+
+        websocket.onopen = function(e) {
+          openFullscreen();
+          writeToScreen("CONNECTED");
+          ISCONNECTED = true;
+          gameButtons.hidden = false;
+          setupButtons.hidden = true;
+          if(leftJoy == null){
+            leftJoy = new JoyStick('left',JSON.parse(joyParm));
+          }
+        };
+
+        websocket.onclose = function(e) {
+          closeFullscreen();
+          ISCONNECTED = false;
+          writeToScreen("DISCONNECTED");
+          gameButtons.hidden = true;
+          quizButtons.hidden = true;
+          setupButtons.hidden = false;
+        };
+
+        websocket.onmessage = function(e) {
+          console.log("revived " + e.data);
+          if(e.data == "QUIZ"){
+            quizButtons.hidden = false;
+            gameButtons.hidden = true;
+          }else{
+            quizButtons.hidden = true;
+            gameButtons.hidden = false;
+          }
+        };
+
+        websocket.onerror = function(e) {
+          writeToScreen("<span class=error>ERROR:</span> " + e.data);
+        };
+      }
+
+      function doSend(message) {
+        writeToScreen("SENT: " + message);
+        websocket.send(message);
+      }
+
+      function writeToScreen(message) {
+        output.innerHTML = message;
+      }
+
+      function onLeftJoystick() {
+        if(leftJoy){
+          if(leftJoy.GetPressed()){
+            betterController.joystick.x = leftJoy.GetX();
+            betterController.joystick.y = leftJoy.GetY();
+            //joyvalues = leftJoy.GetX() + "," + leftJoy.GetY();
+          }else{
+            betterController.joystick.x = 0;
+            betterController.joystick.y = 0;
+            //joyvalues = "0,0";
+          }
+          sendController();
+        }
+      }
+      // function onRight() {
+
+      //   xButtonValue = true;
+      //   vibrate();
+      // }
+
+
+      function sendController() {
+        user.controller.a =betterController.a;
+        user.controller.b = betterController.b;
+        user.controller.x = betterController.x;
+        user.controller.y = betterController.y;
+        user.controller.start = betterController.start;
+        user.controller.joystick.x = betterController.joystick.x;
+        user.controller.joystick.y = betterController.joystick.y;
+
+        doSend(JSON.stringify(user));
+        betterController.a = false;
+        betterController.b = false;
+        betterController.x = false;
+        betterController.y = false;
+        betterController.start = false;
+      }
+
+      function onAButton() {
+        betterController.a = true;
+        vibrate();
+        sendController();
+      }
+
+      function onBButton() {
+        betterController.b = true;
+        vibrate();
+        sendController();
+      }
+
+      function onXButton() {
+        betterController.x = true;
+        vibrate();
+        sendController();
+      }
+
+      function onYButton() {
+        betterController.y = true;
+        vibrate();
+        sendController();
+      }
+
+      function vibrate() {
+        if ("vibrate" in navigator) {
+          navigator.vibrate(50);
+        }
+      }
+
+      var elem = document.documentElement;
+      function openFullscreen() {
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        } else if (elem.mozRequestFullScreen) {
+          /* Firefox */
+          elem.mozRequestFullScreen();
+        } else if (elem.webkitRequestFullscreen) {
+          /* Chrome, Safari & Opera */
+          elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) {
+          /* IE/Edge */
+          elem.msRequestFullscreen();
+        }
+      }
+
+      function closeFullscreen() {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+        }
+      }
+
+      function OnResize(){
+        if(ISCONNECTED){
+          document.getElementById('joystick').remove();
+          browersWidth = left.clientWidth / 1.5;
+          joyParm = '{"width" : '+ browersWidth +', "height": '+ browersWidth+ '}'
+          leftJoy = new JoyStick('left',JSON.parse(joyParm));
+        }
+      }
+
+    </script>
+
+
+
+
+
+
+
+</body>
+</html>
