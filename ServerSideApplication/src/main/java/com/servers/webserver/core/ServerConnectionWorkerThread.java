@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * Works with the communication and handling of messages.
@@ -52,9 +54,8 @@ public class ServerConnectionWorkerThread extends Thread {
             // Allows writing out of the socket.
             outputStream = socket.getOutputStream();
 
-            String html = "<html><head><title>Simple Java Server</title>" +
-                    "</head><body><h1>This Page was served using a simple Java server" +
-                    "</h1></body></html>";
+            String html = new String(Files.readAllBytes(Paths.get("src/main/resources/thisexists/index.html")));
+
 
             final String CRLF = "\n\r"; // 13, 10
 
