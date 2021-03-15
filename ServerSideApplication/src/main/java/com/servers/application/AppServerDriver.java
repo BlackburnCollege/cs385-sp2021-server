@@ -86,8 +86,9 @@ public class AppServerDriver extends Thread {
         }
 
 
-        String temp = "{ \"joystick\": { \"x\":\"5\", \"y\":\"0\" }, \"a\": \"true\", \"b\": \"false\", \"x\": " +
-                "\"false\", \"y\": \"false\", \"start\": \"false\" }";
+        String temp = "{    \"header\": \"user\",    \"type\": \"controller\",    \"jsonBlock\": \"{ \"joystick\": { \"x\":\"5\", \"y\":\"0\" }, \"a\": \"true\", \"b\": \"false\", \"x\": \"false\", \"y\": \"false\", \"start\": \"false\" }\"}";
+
+
 
         UserController controller = null;
     }
