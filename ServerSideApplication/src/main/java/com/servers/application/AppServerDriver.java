@@ -3,6 +3,7 @@ package com.servers.application;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.servers.application.json_objects.JsonHeader;
 import com.servers.application.json_objects.User;
 import com.servers.application.json_objects.UserController;
 import com.servers.webserver.WebServerDriver;
@@ -158,15 +159,15 @@ public class AppServerDriver extends Thread {
                         String msg = new String(message);
                         System.out.println(msg);
                         JsonNode root = myObjectMapper.readTree(msg);
+                        JsonHeader header = myObjectMapper.readValue(msg, JsonHeader.class);
                         System.out.println(root.at("/header").toString());
-                        if (root.at("/header").toString().equals("\"user\"")) {
+                        if (header.getHeader().equals("user")) {
                             //todo change this
                             if(receiver == null) {
                                 receiver = new WebsocketController();
                             }
-                            WebsocketManger.SendToGameClient.push(receiver.interpretMessage(msg));
-
-                        } else if (root.at("/header").toString().equals("\"client\"")) {
+                            WebsocketManger.SendToGameClient.push(receiver.interpretMessage(header.getJsonBlock()));
+                        } else if (header.getHeader().equals("client")) {
                             //todo change this
                             if(receiver == null) {
                                 receiver = new WebSocketGameClient();

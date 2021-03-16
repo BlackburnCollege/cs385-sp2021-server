@@ -19,7 +19,7 @@ public class WebsocketManger {
         SendToGameClient = new LinkedList<>();
 
 
-/*
+
         String test = "{\n" +
                 "    \"header\": \"user\",\n" +
                 "    \"type\": \"controller\",\n" +
@@ -29,6 +29,7 @@ public class WebsocketManger {
             JsonHeader yeet2 = ob.readValue(test, JsonHeader.class);
             System.out.println(yeet2.getHeader());
 
+            /*
             Joystick joy = new Joystick();
             joy.setX("5");
             joy.setY("0");
