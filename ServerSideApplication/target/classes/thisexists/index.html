@@ -424,8 +424,8 @@
         y: false,
         start: false
       }
+
       var user = {
-        header: "",
         name: "",
         ip: "",
         controller: {
@@ -439,6 +439,11 @@
           y: false,
           start: false
         }
+      }
+      var header = {
+        header: "",
+        type: "",
+        jsonBlock: ""
       }
 
       let output = document.getElementById("output"),
@@ -566,7 +571,7 @@
 
 
       function sendController() {
-        user.controller.a =betterController.a;
+        user.controller.a = betterController.a;
         user.controller.b = betterController.b;
         user.controller.x = betterController.x;
         user.controller.y = betterController.y;
@@ -574,7 +579,11 @@
         user.controller.joystick.x = betterController.joystick.x;
         user.controller.joystick.y = betterController.joystick.y;
 
-        doSend(JSON.stringify(user));
+        header.header = "user";
+        header.type = "userController";
+        header.jsonBlock = JSON.stringify(user);
+
+        doSend(JSON.stringify(header));
         betterController.a = false;
         betterController.b = false;
         betterController.x = false;
@@ -595,6 +604,7 @@
       }
 
       function onXButton() {
+        console.log(betterController.x);
         betterController.x = true;
         vibrate();
         sendController();
