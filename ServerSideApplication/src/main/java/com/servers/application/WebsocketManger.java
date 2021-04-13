@@ -28,41 +28,7 @@ public class WebsocketManger {
             JsonNode root = ob.readTree(test);
             JsonHeader yeet2 = ob.readValue(test, JsonHeader.class);
             System.out.println(yeet2.getHeader());
-
-            /*
-            Joystick joy = new Joystick();
-            joy.setX("5");
-            joy.setY("0");
-
-            UserController controlThing = new UserController();
-            controlThing.setX("5");
-            controlThing.setY("0");
-            controlThing.setA("true");
-            controlThing.setB("false");
-            controlThing.setStart("false");
-            controlThing.setJoystick(joy);
-
-        System.out.println(ob.writeValueAsString(controlThing));
-
-            JsonNode root2 = ob.readTree(yeet2.getJsonBlock());
-            UserController yeetTwo = ob.readValue(yeet2.getJsonBlock(), UserController.class);
-            System.out.println(yeetTwo.getX());
-
-            JsonHeader head2 = new JsonHeader();
-            head2.setHeader("this");
-            head2.setType("userController");
-            head2.setJsonBlock(ob.writeValueAsString(controlThing));
-            System.out.println(ob.writeValueAsString(head2));
-
-
-            JsonNode root3 = ob.readTree(ob.writeValueAsString(head2));
-            JsonHeader head3 = ob.readValue(ob.writeValueAsString(head2), JsonHeader.class);
-            System.out.println(head3.getType());
-
-            JsonNode root4 = ob.readTree(ob.writeValueAsString(head3.getJsonBlock()));
-            UserController controlThingTwo = ob.readValue(head3.getJsonBlock(), UserController.class);
-            System.out.println(controlThingTwo.getJoystick().getX());
-*/
+            
 
         WebsocketConnection runner = new WebsocketConnection();
         runner.start();

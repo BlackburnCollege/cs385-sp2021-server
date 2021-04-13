@@ -44,8 +44,6 @@ public class WebsocketConnection extends Thread{
     }
 
     public void mainTwo() throws IOException, NoSuchAlgorithmException {
-
-        Iterator tokenTrav = tokenIndex.entrySet().iterator();
         ServerSocket server = new ServerSocket(8000);
         try {
             System.out.println("Server has started on 127.0.0.1:8000.\r\nWaiting for a connection...");
@@ -53,13 +51,6 @@ public class WebsocketConnection extends Thread{
             System.out.println("waiting for the client");
             Socket client = server.accept();
             gameClient = new AppServerDriver(client);
-
-            /*while(tokenTrav.hasNext()){
-                Map.Entry mapElement = (Map.Entry)tokenTrav.next();
-                if(mapElement.getValue() == null){
-                    tokenIndex.replace((String)mapElement.getKey(), gameClient);
-                }
-            }*/
             gameClient.start();
 
             for (int i = 0; i < this.threadArray.length; i++) {
