@@ -1,52 +1,42 @@
 package com.servers.application;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+
 
 public class Session {
 
     private AppServerDriver clientConnection;
-    private AppServerDriver[] controllers = new AppServerDriver[8];
     private String token = "";
-    private HashMap<String, Session> sessIndex = new HashMap<>();
     Random rand = new Random();
+    private LinkedList conList = new LinkedList();
 
-    public Session(AppServerDriver client, AppServerDriver[] con, String s){
+
+    public Session(AppServerDriver client, LinkedList l, String s){
         this.clientConnection = client;
-        this.controllers = con;
+        this.conList = l;
         this.token = s;
+
     }
 
     public void setToken(String token) {
         this.token = token;
     }
 
+    public void setConList (LinkedList list){ this.conList = list; }
+
     public void setClientConnection(AppServerDriver c){
         this.clientConnection = c;
     }
 
-    public AppServerDriver[] getCons(){
-        return controllers;
+    public LinkedList getCons(){
+        return conList;
     }
 
     public String getToken() {
         return token;
     }
-    public AppServerDriver getClientConnection(){
-        return clientConnection;
 
-    }
+    public AppServerDriver getClientConnection(){ return clientConnection; }
 
-    public boolean isInHash(String s){
-        Iterator tokenTrav = sessIndex.entrySet().iterator();
-        while(tokenTrav.hasNext()){
-            Map.Entry mapElement = (Map.Entry)tokenTrav.next();
-            if(mapElement.getKey().equals(s)){
-                return true;
-            }
-        }
-        return false;
-    }
+
 }
