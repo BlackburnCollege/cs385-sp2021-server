@@ -1,5 +1,6 @@
 package com.servers.application;
 
+import ch.qos.logback.core.joran.spi.NoAutoStartUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -185,7 +186,6 @@ public class AppServerDriver extends Thread {
         System.out.println(msg);
         JsonNode root = myObjectMapper.readTree(msg);
         JsonHeader header = myObjectMapper.readValue(msg, JsonHeader.class);
-        System.out.println(root.at("/header").toString());
         if (header.getHeader().equals("user")) {
             if(receiver == null) {
                 receiver = new WebsocketController();
@@ -193,20 +193,26 @@ public class AppServerDriver extends Thread {
 
             if(this.session == null){
                 if(header.getType().equals("Token")){
+                    System.out.println("This ran");
                     Token jsonToken = myObjectMapper.readValue(header.getJsonBlock(),Token.class);
+                    System.out.println(jsonToken.getToken() + "is the token");
+
                     this.session = WebsocketManger.getSession(jsonToken.getToken());
                 }
             }else{
-
+                session.getClientConnection().sendMessage(receiver.interpretMessage(msg));
             }
-            WebsocketManger.SendToGameClient.push(receiver.interpretMessage(header.getJsonBlock()));
+
         } else if (header.getHeader().equals("Client")) {
             //todo change this
             if(receiver == null) {
                 receiver = new WebSocketGameClient();
             }
             if(this.session == null){
+                //Creates a session so its added to the hashmap
                 this.session = WebsocketManger.createSession(this);
+
+                //creates a token object to be sent to the client
                 Token token = new Token();
                 token.setToken(this.session.getToken());
                 JsonHeader head = new JsonHeader();
@@ -214,6 +220,7 @@ public class AppServerDriver extends Thread {
                 head.setType("Token");
                 head.setJsonBlock(myObjectMapper.writeValueAsString(token));
                 sendMessage(myObjectMapper.writeValueAsString(head));
+
             }else{
 
             }

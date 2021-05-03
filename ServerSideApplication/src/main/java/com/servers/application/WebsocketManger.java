@@ -75,6 +75,7 @@ public class WebsocketManger {
     public static Session createSession(AppServerDriver client){
         String token = tokenGen();
         Session session = new Session(client,new LinkedList(), token);
+        System.out.println("Token created " + token);
         sessions.put(token,session);
         return session;
     }

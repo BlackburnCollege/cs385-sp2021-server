@@ -25,6 +25,7 @@ public class Session {
     public void setConList (LinkedList list){ this.conList = list; }
 
     public void setClientConnection(AppServerDriver c){
+        System.out.println("set client connection");
         this.clientConnection = c;
     }
 
