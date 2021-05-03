@@ -1,9 +1,11 @@
 package com.servers.application;
 
+import ch.qos.logback.core.joran.spi.NoAutoStartUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.servers.application.json_objects.JsonHeader;
+import com.servers.application.json_objects.Token;
 import com.servers.application.json_objects.User;
 import com.servers.application.json_objects.UserController;
 import com.servers.webserver.WebServerDriver;
@@ -34,6 +36,8 @@ public class AppServerDriver extends Thread {
     private OutputStream outputStream;
 
     private WebsocketMsgReceiver receiver;
+
+    public Session session;
 
     public AppServerDriver(Socket s){
         socket = s;
@@ -72,7 +76,7 @@ public class AppServerDriver extends Thread {
 
 
         try {
-            outputStream.write(encode("Hello from Server!"));
+            //outputStream.write(encode("Hello from Server!"));
             outputStream.flush();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -157,22 +161,7 @@ public class AppServerDriver extends Thread {
                         //gets message here
 
                         String msg = new String(message);
-                        System.out.println(msg);
-                        JsonNode root = myObjectMapper.readTree(msg);
-                        JsonHeader header = myObjectMapper.readValue(msg, JsonHeader.class);
-                        System.out.println(root.at("/header").toString());
-                        if (header.getHeader().equals("user")) {
-                            //todo change this
-                            if(receiver == null) {
-                                receiver = new WebsocketController();
-                            }
-                            WebsocketManger.SendToGameClient.push(receiver.interpretMessage(header.getJsonBlock()));
-                        } else if (header.getHeader().equals("client")) {
-                            //todo change this
-                            if(receiver == null) {
-                                receiver = new WebSocketGameClient();
-                            }
-                        }
+                        interpretMessage(msg);
 
 
 
@@ -193,6 +182,50 @@ public class AppServerDriver extends Thread {
 
     }
 
+    public void interpretMessage(String msg) throws JsonProcessingException {
+        System.out.println(msg);
+        JsonNode root = myObjectMapper.readTree(msg);
+        JsonHeader header = myObjectMapper.readValue(msg, JsonHeader.class);
+        if (header.getHeader().equals("user")) {
+            if(receiver == null) {
+                receiver = new WebsocketController();
+            }
+
+            if(this.session == null){
+                if(header.getType().equals("Token")){
+                    System.out.println("This ran");
+                    Token jsonToken = myObjectMapper.readValue(header.getJsonBlock(),Token.class);
+                    System.out.println(jsonToken.getToken() + "is the token");
+
+                    this.session = WebsocketManger.getSession(jsonToken.getToken());
+                }
+            }else{
+                session.getClientConnection().sendMessage(receiver.interpretMessage(msg));
+            }
+
+        } else if (header.getHeader().equals("Client")) {
+            //todo change this
+            if(receiver == null) {
+                receiver = new WebSocketGameClient();
+            }
+            if(this.session == null){
+                //Creates a session so its added to the hashmap
+                this.session = WebsocketManger.createSession(this);
+
+                //creates a token object to be sent to the client
+                Token token = new Token();
+                token.setToken(this.session.getToken());
+                JsonHeader head = new JsonHeader();
+                head.setHeader("Server");
+                head.setType("Token");
+                head.setJsonBlock(myObjectMapper.writeValueAsString(token));
+                sendMessage(myObjectMapper.writeValueAsString(head));
+
+            }else{
+
+            }
+        }
+    }
 
     public static byte[] encode(String mess) throws IOException{
         byte[] rawData = mess.getBytes();

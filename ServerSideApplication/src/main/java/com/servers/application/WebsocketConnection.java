@@ -4,11 +4,18 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Random;
+import java.util.Map;
 
 public class WebsocketConnection extends Thread{
 
     private AppServerDriver[] threadArray = new AppServerDriver[8];
     private AppServerDriver gameClient;
+
+
+
     @Override
     public void run() {
         try {
@@ -19,6 +26,9 @@ public class WebsocketConnection extends Thread{
             e.printStackTrace();
         }
     }
+
+
+
 
     public void mainTwo() throws IOException, NoSuchAlgorithmException {
         ServerSocket server = new ServerSocket(8000);

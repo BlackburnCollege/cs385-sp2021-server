@@ -8,11 +8,17 @@ import com.servers.application.json_objects.UserController;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Random;
 
 public class WebsocketManger {
 
     static public LinkedList<String> SendToGameClient;
+    static private HashMap<String, Session> sessions = new HashMap<>();
+
+    static private Random rand = new Random();
+
 
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
         ObjectMapper ob = new ObjectMapper();
@@ -28,41 +34,7 @@ public class WebsocketManger {
             JsonNode root = ob.readTree(test);
             JsonHeader yeet2 = ob.readValue(test, JsonHeader.class);
             System.out.println(yeet2.getHeader());
-
-            /*
-            Joystick joy = new Joystick();
-            joy.setX("5");
-            joy.setY("0");
-
-            UserController controlThing = new UserController();
-            controlThing.setX("5");
-            controlThing.setY("0");
-            controlThing.setA("true");
-            controlThing.setB("false");
-            controlThing.setStart("false");
-            controlThing.setJoystick(joy);
-
-        System.out.println(ob.writeValueAsString(controlThing));
-
-            JsonNode root2 = ob.readTree(yeet2.getJsonBlock());
-            UserController yeetTwo = ob.readValue(yeet2.getJsonBlock(), UserController.class);
-            System.out.println(yeetTwo.getX());
-
-            JsonHeader head2 = new JsonHeader();
-            head2.setHeader("this");
-            head2.setType("userController");
-            head2.setJsonBlock(ob.writeValueAsString(controlThing));
-            System.out.println(ob.writeValueAsString(head2));
-
-
-            JsonNode root3 = ob.readTree(ob.writeValueAsString(head2));
-            JsonHeader head3 = ob.readValue(ob.writeValueAsString(head2), JsonHeader.class);
-            System.out.println(head3.getType());
-
-            JsonNode root4 = ob.readTree(ob.writeValueAsString(head3.getJsonBlock()));
-            UserController controlThingTwo = ob.readValue(head3.getJsonBlock(), UserController.class);
-            System.out.println(controlThingTwo.getJoystick().getX());
-*/
+            
 
         WebsocketConnection runner = new WebsocketConnection();
         runner.start();
@@ -79,5 +51,32 @@ public class WebsocketManger {
             }
         }
 
+    }
+
+     public static String tokenGen(){
+        String[] chars = {"0","1","2","3","4","5","6","7","8","9",
+                "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P",
+                "Q","R","S","T","U","V","W","X","Y","Z"};
+        String token = "";
+        int max = 36;
+        int randNum =0;
+        for(int i =0; i<4; i++){
+            randNum = rand.nextInt(max);
+            token = token + chars[randNum];
+        }
+
+        return token;
+    }
+
+    public static Session getSession(String key){
+        return sessions.get(key);
+    }
+
+    public static Session createSession(AppServerDriver client){
+        String token = tokenGen();
+        Session session = new Session(client,new LinkedList(), token);
+        System.out.println("Token created " + token);
+        sessions.put(token,session);
+        return session;
     }
 }
