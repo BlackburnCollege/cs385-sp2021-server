@@ -28,8 +28,11 @@ public class WebsocketConnection extends Thread{
     }
 
 
-
-
+    /**
+     * basicaly just a object version of main bc I needed a object to call threads right
+     * @throws IOException
+     * @throws NoSuchAlgorithmException
+     */
     public void mainTwo() throws IOException, NoSuchAlgorithmException {
         ServerSocket server = new ServerSocket(8000);
         try {

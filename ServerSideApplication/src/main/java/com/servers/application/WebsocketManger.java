@@ -12,6 +12,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
 
+/**
+ * Handles the websockets connections and active sessions. Responsible for creating and distributing sessions
+ */
 public class WebsocketManger {
 
     static public LinkedList<String> SendToGameClient;
@@ -23,17 +26,6 @@ public class WebsocketManger {
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
         ObjectMapper ob = new ObjectMapper();
         SendToGameClient = new LinkedList<>();
-
-
-
-        String test = "{\n" +
-                "    \"header\": \"user\",\n" +
-                "    \"type\": \"controller\",\n" +
-                "    \"jsonBlock\": \"\\\"{ \\\"joystick\\\": { \\\"x\\\":\\\"5\\\", \\\"y\\\":\\\"0\\\" }, \\\"a\\\": \\\"true\\\", \\\"b\\\": \\\"false\\\", \\\"x\\\": \\\"false\\\", \\\"y\\\": \\\"false\\\", \\\"start\\\": \\\"false\\\" }\\\"\"\n" +
-                "}";
-            JsonNode root = ob.readTree(test);
-            JsonHeader yeet2 = ob.readValue(test, JsonHeader.class);
-            System.out.println(yeet2.getHeader());
             
 
         WebsocketConnection runner = new WebsocketConnection();
@@ -53,6 +45,10 @@ public class WebsocketManger {
 
     }
 
+    /**
+     * generates a sudo random token for sessions
+     * @return
+     */
      public static String tokenGen(){
         String[] chars = {"0","1","2","3","4","5","6","7","8","9",
                 "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P",
@@ -68,10 +64,20 @@ public class WebsocketManger {
         return token;
     }
 
+    /**
+     * checks the hashmap for a session via its token
+     * @param key
+     * @return
+     */
     public static Session getSession(String key){
         return sessions.get(key);
     }
 
+    /**
+     * creates a session withe a client connection
+     * @param client
+     * @return the created session
+     */
     public static Session createSession(AppServerDriver client){
         String token = tokenGen();
         Session session = new Session(client,new LinkedList(), token);

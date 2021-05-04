@@ -2,6 +2,9 @@ package com.servers.application;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Currently unsed used to sanatice and recate to messages form the client
+ */
 public class WebSocketGameClient implements WebsocketMsgReceiver{
     private ObjectMapper OM;
 

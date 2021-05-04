@@ -25,10 +25,18 @@ public class Session {
 
     }
 
+    /**
+     * sets token
+     * @param token
+     */
     public void setToken(String token) {
         this.token = token;
     }
 
+    /**
+     * sets the list to a diffrent list of controller connections
+     * @param list
+     */
     public void setConList (LinkedList list){ this.conList = list; }
 
     public void setClientConnection(AppServerDriver c){

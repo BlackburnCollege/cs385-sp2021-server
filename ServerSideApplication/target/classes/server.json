@@ -19,7 +19,7 @@
     "controller": "object"
   },
 
-  "port": 80,
+  "port": 8080,
   "webroot": "/tmp"
 
 }

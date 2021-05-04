@@ -25,6 +25,9 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * A websocket connection that has been established. handles the message and decides what to do with the messages recived
+ */
 public class AppServerDriver extends Thread {
 
 
