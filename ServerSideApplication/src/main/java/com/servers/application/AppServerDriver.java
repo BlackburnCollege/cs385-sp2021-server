@@ -98,6 +98,11 @@ public class AppServerDriver extends Thread {
         UserController controller = null;
     }
 
+    /**
+     * Takes the input stream and parses it to text
+     * @param inputStream
+     * @throws IOException
+     */
     private void printInputStream(InputStream inputStream) throws IOException {
         byte[] b = new byte[8000];//incoming buffer
         byte[] message =null;//buffer to assemble message in
@@ -182,10 +187,21 @@ public class AppServerDriver extends Thread {
 
     }
 
+    /**
+     * looks at the string msg recived from the connection and parses the data
+     * @param msg
+     * @throws JsonProcessingException
+     */
     public void interpretMessage(String msg) throws JsonProcessingException {
         System.out.println(msg);
         JsonNode root = myObjectMapper.readTree(msg);
-        JsonHeader header = myObjectMapper.readValue(msg, JsonHeader.class);
+        JsonHeader header;
+        try {
+            header = myObjectMapper.readValue(msg, JsonHeader.class);
+        }catch(Exception e){
+            return;
+        }
+
         if (header.getHeader().equals("user")) {
             if(receiver == null) {
                 receiver = new WebsocketController();
@@ -227,6 +243,12 @@ public class AppServerDriver extends Thread {
         }
     }
 
+    /**
+     * encodes a message to be sent through the websocket
+     * @param mess
+     * @return byte array of the message ready to be sent over the network
+     * @throws IOException
+     */
     public static byte[] encode(String mess) throws IOException{
         byte[] rawData = mess.getBytes();
 
@@ -275,7 +297,12 @@ public class AppServerDriver extends Thread {
         return reply;
     }
 
-
+    /**
+     * initiate the connection and verfy it follows the websocket protical
+     * @param inputStream
+     * @param outputStream
+     * @throws UnsupportedEncodingException
+     */
     private static void doHandShakeToInitializeWebSocketConnection(InputStream inputStream, OutputStream outputStream)
             throws UnsupportedEncodingException {
         String data = new Scanner(inputStream,"UTF-8").useDelimiter("\\r\\n\\r\\n").next();

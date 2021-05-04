@@ -71,9 +71,9 @@
 
 
 </head>
-<!--input value needs changed to server eventually-->
 <body class="body" onresize="OnResize()">
 <h4 style="size: 10%; color: white; text-align: center;">Flow Controller</h4>
+<!-- The field that people insert their IP -->
 <div id="setup" class="setup">
     IP: <br/>
     <input
@@ -82,7 +82,16 @@
             value="10.151.2.138"
             style="background-color: lightpink; color: blue; border: none;"
     />
+    <!-- The token field. called "Code" because it's what a normal user would refer to it as -->
+    <br/> Code: <br/>
+    <input
+            id="token"
+            type="text"
+            value=""
+            style="background-color: lightpink; color: blue; border: none;"
+    />
 
+    <!-- The field in which a user enters their username -->
     <br/> Username: <br/>
     <input
             id="username"
@@ -91,12 +100,14 @@
             style="background-color: lightpink; color: blue; border: none;"
     />
     <br/>
+
+    <!-- The "Connect" button -->
     <button id="setupB" style="background-color: cadetblue; border: none;">
         Connect
     </button>
 </div>
 
-<div id="quizButtons" hidden > <!-- debug -->
+<div id="quizButtons" hidden > <!-- debug by removing hidden -->
     <button id="Xbutton" class="gamebuttontest" style="background-color:paleturquoise; ">
         <button id="Ybutton" class="gamebuttontest" style="background-color:rgb(229, 229, 155);" > </button>
     </button>
@@ -105,13 +116,16 @@
     </button>
 </div>
 
-<div id="gameButtons" hidden> <!-- debug -->
+<div id="gameButtons" hidden> <!-- debug by removing hidden -->
     <div id="left" class="gamebuttonjoy"> <button id="right" class="gamebutton" style="background-color:palevioletred; color: paleturquoise;" > </button></div>
 </div>
 <div id="output"></div>
 
 
 <script>
+      /**
+       * Code for the joystick
+       */
       //code modified from https://github.com/bobboteck/JoyStick MIT
       var JoyStick = (function(container, parameters) {
       parameters = parameters || {};
@@ -133,10 +147,7 @@
       if(width == 0) width = 250;
       if(height == 0) height = 250;
       canvas.width = width;
-      //this was 50%
-      //canvas.style.width = "50%";
       canvas.height = height;
-      //canvas.style.height = "20%";
       objContainer.prepend(canvas);
       var context=canvas.getContext('2d');
 
@@ -413,6 +424,9 @@
 <script>
       // http://www.websocket.org/echo.html
 
+      /**
+       * The JSON object for our controller
+       */
      var betterController = {
         joystick: {
           x: 0,
@@ -425,6 +439,9 @@
         start: false
       }
 
+      /**
+       * The JSON object that has all information of a user and they current controlelr state
+       */
       var user = {
         name: "",
         ip: "",
@@ -440,12 +457,23 @@
           start: false
         }
       }
+      /**
+       * JSON object for the header
+       */
       var header = {
         header: "",
         type: "",
         jsonBlock: ""
       }
 
+      /**
+       * JSON object we send the server to verify tokens
+       */
+      var token = {
+        token: ""
+      }
+
+      // Inintialize field variables
       let output = document.getElementById("output"),
         left = document.getElementById("left"),
         right = document.getElementById("right"),
@@ -454,32 +482,33 @@
         yButton = document.getElementById("Ybutton");
         aButton = document.getElementById("Abutton");
         bButton = document.getElementById("Bbutton");
-
       let wsip = document.getElementById("wsip");
+      let tokenInput = document.getElementById("token");
       let gameButtons = document.getElementById("gameButtons");
       let setupButtons = document.getElementById("setup");
       let quizButtons = document.getElementById("quizButtons");
-      // wsUri = "ws://echo.websocket.org/",
 
       wsip.value = window.location.hostname;
       let leftJoy = null;
       setInterval(onLeftJoystick,50);
-      //left.addEventListener("touchmove",onLeft);
-      //left.addEventListener("mousemove",onLeft);
-      // right.addEventListener("touchstart", onRight);
-      //riht.addEventListener("click",onRight);
-      setupbtn.addEventListener("click", setupConnection);
-      xButton.addEventListener("touchstart", onXButton);
-      yButton.addEventListener("touchstart", onYButton);
-      aButton.addEventListener("touchstart", onAButton);
-      bButton.addEventListener("touchstart", onBButton);
 
-      // //for message creation
-      // let joyvalues = "0,0";
-      // let betterController.x = "false";
-      // let betterController.y = "false";
-      // let betterController.a = "false";
-      // let betterController.b = "false";
+      // Add events for the case of a button being hit or the joystick being moved
+      setupbtn.addEventListener("click", setupConnection);
+
+      right.addEventListener("click", onXButton);
+      right.addEventListener("touchstart", onXButton);
+
+      xButton.addEventListener("click", onXButton);
+      xButton.addEventListener("touchstart", onXButton);
+
+      yButton.addEventListener("click", onYButton);
+      yButton.addEventListener("touchstart", onYButton);
+
+      aButton.addEventListener("click", onAButton);
+      aButton.addEventListener("touchstart", onAButton);
+
+      bButton.addEventListener("click", onBButton);
+      bButton.addEventListener("touchstart", onBButton);
 
       //add parameters to the joystick to make it resize
       let browersWidth = left.clientWidth / 1.5;
@@ -491,10 +520,16 @@
       let ISCONNECTED = false;
 
       let username = "null";
+
+      /**
+       * Sets up the connection with the server
+       */
       function setupConnection() {
+
         username = document.getElementById("username").value;
+
         let ip = setupbtn.value;
-        if(username == null){
+        if(username == null || token == null){
           return;
         }
         user.name = username;
@@ -510,6 +545,17 @@
           ISCONNECTED = true;
           gameButtons.hidden = false;
           setupButtons.hidden = true;
+          token.token = tokenInput.value;
+
+          //force upercase
+          token.token = token.token.toUpperCase();
+
+          header.header = "user";
+          header.type = "Token";
+          header.jsonBlock = JSON.stringify(token);
+
+          doSend(JSON.stringify(header));
+
           if(leftJoy == null){
             leftJoy = new JoyStick('left',JSON.parse(joyParm));
           }
@@ -540,6 +586,9 @@
         };
       }
 
+      /**
+       * Sends a string to the server
+       */
       function doSend(message) {
         writeToScreen("SENT: " + message);
         websocket.send(message);
@@ -549,27 +598,25 @@
         output.innerHTML = message;
       }
 
+      /**
+       * Causes the appropriate reaction in the case of the joystick being moved
+       */
       function onLeftJoystick() {
         if(leftJoy){
           if(leftJoy.GetPressed()){
             betterController.joystick.x = leftJoy.GetX();
             betterController.joystick.y = leftJoy.GetY();
-            //joyvalues = leftJoy.GetX() + "," + leftJoy.GetY();
           }else{
             betterController.joystick.x = 0;
             betterController.joystick.y = 0;
-            //joyvalues = "0,0";
           }
           sendController();
         }
       }
-      // function onRight() {
 
-      //   xButtonValue = true;
-      //   vibrate();
-      // }
-
-
+      /**
+       * Sends the current state of the user (and by extension, the controller)
+       */
       function sendController() {
         user.controller.a = betterController.a;
         user.controller.b = betterController.b;
@@ -580,7 +627,7 @@
         user.controller.joystick.y = betterController.joystick.y;
 
         header.header = "user";
-        header.type = "userController";
+        header.type = "user";
         header.jsonBlock = JSON.stringify(user);
 
         doSend(JSON.stringify(header));
@@ -591,37 +638,54 @@
         betterController.start = false;
       }
 
+      /**
+       * Causes the appropriate reaction in the case of the A button being pressed
+       */
       function onAButton() {
         betterController.a = true;
         vibrate();
         sendController();
       }
 
+      /**
+       * Causes the appropriate reaction in the case of the B button being pressed
+       */
       function onBButton() {
         betterController.b = true;
         vibrate();
         sendController();
       }
 
+      /**
+       * Causes the appropriate reaction in the case of the X button being pressed
+       */
       function onXButton() {
-        console.log(betterController.x);
         betterController.x = true;
         vibrate();
         sendController();
       }
 
+      /**
+       * Causes the appropriate reaction in the case of the Y button being pressed
+       */
       function onYButton() {
         betterController.y = true;
         vibrate();
         sendController();
       }
 
+      /**
+       * Vibrates. Not sure what you expected. it'
+       */
       function vibrate() {
         if ("vibrate" in navigator) {
           navigator.vibrate(50);
         }
       }
 
+      /**
+       * Sets a device to full screen
+       */
       var elem = document.documentElement;
       function openFullscreen() {
         if (elem.requestFullscreen) {
@@ -638,6 +702,9 @@
         }
       }
 
+      /**
+       * Allows you to exit full screen mode
+       */
       function closeFullscreen() {
         if (document.exitFullscreen) {
           document.exitFullscreen();
@@ -650,6 +717,9 @@
         }
       }
 
+      /**
+       * determines the sixe of a window when the size is changed
+       */
       function OnResize(){
         if(ISCONNECTED){
           document.getElementById('joystick').remove();

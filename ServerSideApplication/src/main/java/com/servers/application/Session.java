@@ -2,7 +2,9 @@ package com.servers.application;
 
 import java.util.*;
 
-
+/**
+ * The session represents a single client and the connected controllers
+ */
 public class Session {
 
     private AppServerDriver clientConnection;
@@ -10,7 +12,12 @@ public class Session {
     Random rand = new Random();
     private LinkedList conList = new LinkedList();
 
-
+    /**
+     * Sets up a session with some defults Must have a client!
+     * @param client
+     * @param l
+     * @param s
+     */
     public Session(AppServerDriver client, LinkedList l, String s){
         this.clientConnection = client;
         this.conList = l;
