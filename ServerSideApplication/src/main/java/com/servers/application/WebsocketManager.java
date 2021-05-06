@@ -15,7 +15,7 @@ import java.util.Random;
 /**
  * Handles the websockets connections and active sessions. Responsible for creating and distributing sessions
  */
-public class WebsocketManger {
+public class WebsocketManager {
 
     static public LinkedList<String> SendToGameClient;
     static private HashMap<String, Session> sessions = new HashMap<>();

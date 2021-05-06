@@ -1,7 +1,8 @@
 package com.servers.application.json_objects;
 
 /**
- *
+ * The following is a JSON Object containing data regarding the User's information for connecting to the server and
+ * the game client. This Object also stored the information of the controller from the corresponding user.
  */
 public class User {
     private String name;

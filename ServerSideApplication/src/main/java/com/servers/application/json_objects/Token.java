@@ -1,5 +1,8 @@
 package com.servers.application.json_objects;
 
+/**
+ *
+ */
 public class Token {
     private String token;
 

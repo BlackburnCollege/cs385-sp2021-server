@@ -1,12 +1,10 @@
 package com.servers.application;
 
-import ch.qos.logback.core.joran.spi.NoAutoStartUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.servers.application.json_objects.JsonHeader;
 import com.servers.application.json_objects.Token;
-import com.servers.application.json_objects.User;
 import com.servers.application.json_objects.UserController;
 import com.servers.webserver.WebServerDriver;
 import org.slf4j.Logger;
@@ -17,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -26,11 +23,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * A websocket connection that has been established. handles the message and decides what to do with the messages recived
+ * A websocket connection that has been established. handles the message and decides what to do with the messages
+ * received
  */
 public class AppServerDriver extends Thread {
-
-
 
     private final static Logger LOGGER = LoggerFactory.getLogger(WebServerDriver.class);
     private static ObjectMapper myObjectMapper = new ObjectMapper();
@@ -46,6 +42,12 @@ public class AppServerDriver extends Thread {
         socket = s;
     }
 
+
+    /**
+     * This method encodes a message to be written out of the input stream and sent to whomever the user is connected to
+     * such as the game client.
+     * @param message The message being sent to the client or recipient through the output stream.
+     */
     public void sendMessage(String message){
         try {
             System.out.println("sent: " + message);
@@ -55,6 +57,10 @@ public class AppServerDriver extends Thread {
         }
     }
 
+    /**
+     * The run method creates an input and output stream to properly connect with the client, sending and receiving
+     * messages from the output and input streams respectively.
+     */
     @Override
     public void run() {
         InputStream inputStream;
@@ -191,7 +197,7 @@ public class AppServerDriver extends Thread {
     }
 
     /**
-     * looks at the string msg recived from the connection and parses the data
+     * Looks at the string msg recived from the connection and parses the data
      * @param msg
      * @throws JsonProcessingException
      */
@@ -216,7 +222,7 @@ public class AppServerDriver extends Thread {
                     Token jsonToken = myObjectMapper.readValue(header.getJsonBlock(),Token.class);
                     System.out.println(jsonToken.getToken() + "is the token");
 
-                    this.session = WebsocketManger.getSession(jsonToken.getToken());
+                    this.session = WebsocketManager.getSession(jsonToken.getToken());
                 }
             }else{
                 session.getClientConnection().sendMessage(receiver.interpretMessage(msg));
@@ -229,7 +235,7 @@ public class AppServerDriver extends Thread {
             }
             if(this.session == null){
                 //Creates a session so its added to the hashmap
-                this.session = WebsocketManger.createSession(this);
+                this.session = WebsocketManager.createSession(this);
 
                 //creates a token object to be sent to the client
                 Token token = new Token();
@@ -247,8 +253,8 @@ public class AppServerDriver extends Thread {
     }
 
     /**
-     * encodes a message to be sent through the websocket
-     * @param mess
+     * Encodes a message to be sent through the websocket
+     * @param mess The JSON Object in string format to be properly encoded as a message through the output stream.
      * @return byte array of the message ready to be sent over the network
      * @throws IOException
      */
@@ -301,9 +307,9 @@ public class AppServerDriver extends Thread {
     }
 
     /**
-     * initiate the connection and verfy it follows the websocket protical
-     * @param inputStream
-     * @param outputStream
+     * initiate the connection and verify it follows the websocket protical
+     * @param inputStream The input stream of the App Server that receives messages.
+     * @param outputStream The output stream of the App Server that sends messages.
      * @throws UnsupportedEncodingException
      */
     private static void doHandShakeToInitializeWebSocketConnection(InputStream inputStream, OutputStream outputStream)

@@ -1,7 +1,7 @@
 package com.servers.application.json_objects;
 
 /**
- *
+ * The following is a JSON Object used to send data regarding the users controller to the client.
  */
 public class UserController {
 

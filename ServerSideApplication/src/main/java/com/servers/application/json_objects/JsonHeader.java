@@ -1,5 +1,9 @@
 package com.servers.application.json_objects;
 
+/**
+ * This is a JSON header used distinguish what kind of message is being sent to and from the server to the client
+ * and user.
+ */
 public class JsonHeader {
 
     private String header;

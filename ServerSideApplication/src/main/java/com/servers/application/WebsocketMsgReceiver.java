@@ -1,7 +1,7 @@
 package com.servers.application;
 
 /**
- * overall unused but would alow santisation of messages recived from diffrent types of websocket connections
+ * Overall unused but would allow santisation of messages received from different types of websocket connections
  */
 public interface WebsocketMsgReceiver {
     public String interpretMessage(String msg);
